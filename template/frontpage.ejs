@@ -1,0 +1,77 @@
+<% layout('layout/page') -%>
+<% block('title', "Комментарии") -%>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<div id="room">
+    <ul class="list-unstyled"></ul>
+    <form>
+        <input disabled class="form-control" autocomplete="off" autofocus placeholder="Комментарий...">
+    </form>
+</div>
+
+<script>
+
+
+    var form = $('#room form');
+    var ul = $('#room ul');
+    var input = $('#room input');
+    var socket = io.connect('', {
+        reconnect: false
+    });
+
+    socket
+        .on('message', function(username, message, time) {
+            printMessage(username + ": " + message);
+            printDate(time);
+        })
+        .on('updateTime', function(time, index) {
+            document.getElementsByTagName("DATE")[index].innerHTML = time;
+        })
+        .on('leave', function(username) {
+            printStatus(username + "exit");
+        })
+        .on('connect', function() {
+            form.on('submit', sendMessage);
+            input.prop('disabled', false);
+        })
+        .on('disconnect', function() {
+            form.off('submit', sendMessage);
+            input.prop('disabled', true);
+            this.$emit('error');
+        })
+        .on('logout', function() {
+            location.href = "/";
+        })
+        .on('error', function(reason) {
+            if (reason == "handshake unauthorized") {
+            } else {
+                setTimeout(function() {
+                    socket.socket.connect();
+                }, 500);
+            }
+        });
+
+    function sendMessage() {
+        var text = input.val();
+        socket.emit('message', text, function() {
+            printMessage(text);
+        });
+
+        input.val('');
+        return false;
+    }
+
+
+    function printStatus(status) {
+        $('<li>').append($('<i>').text(status)).appendTo(ul);
+    }
+
+    function printMessage(text) {
+        $('<li>').text(text).appendTo(ul);
+    }
+    function printDate(date) {
+        $('<date>').text(date).appendTo(ul);
+    }
+
+</script>

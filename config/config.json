@@ -1,0 +1,22 @@
+{
+  "port": 3001,
+  "mongoose": {
+    "uri": "mongodb://localhost:27017/site",
+    "options": {
+      "server": {
+        "socketOptions": {
+          "keepAlive": 1
+        }
+      }
+    }
+  },
+  "session": {
+    "secret": "secret",
+    "key": "sid",
+    "cookie": {
+      "path": "/",
+      "httpOnly": true,
+      "maxAge": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "site",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "3.3.8",
+    "mongoose": "4.10.8",
+    "ejs": "*",
+    "ejs-locals": "*",
+    "connect-mongo": "*",
+    "socket.io": "*",
+    "connect": "2.8.8",
+    "cookie": "*",
+    "moment": "*"
+  }
+}
