@@ -120,15 +120,15 @@ module.exports = function (server) {
     io.sockets.on('connection', function (socket) {
             mongoose.connection.db.dropDatabase();
 
-            socket.on('message', function (text, cb) {
+            socket.on('message', function (text1, text2, cb) {
                 var date = moment();
-                var record = new Record({username: username, message: text, created: date});
+                var record = new Record({username: username, theme: text1, message: text2, created: date});
                 record.save(function (err) {
                     if (err) {
                         return console.log(err);
                     }
                 });
-                socket.emit('message', username, text, date);
+                socket.emit('message', username, text1, text2,  date);
             });
             socket.on('disconnect', function () {
                 socket.broadcast.emit('leave', username);

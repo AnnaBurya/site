@@ -11,6 +11,10 @@ var schema = new Schema({
         type: String,
         required: true
     },
+    theme: {
+        type: String,
+        required: true
+    },
     message: {
         type: String,
         required: true

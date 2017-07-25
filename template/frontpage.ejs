@@ -5,8 +5,12 @@
 
 <div id="room">
     <ul class="list-unstyled"></ul>
-    <form>
-        <input disabled class="form-control" autocomplete="off" autofocus placeholder="Комментарий...">
+    <form id ="first">
+        <input  autocomplete="off"  placeholder="Тема...">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    <form id ="second">
+        <textarea autocomplete="off"  placeholder="Комментарий..."></textarea>
     </form>
 </div>
 
@@ -15,14 +19,17 @@
 
     var form = $('#room form');
     var ul = $('#room ul');
-    var input = $('#room input');
+    var input1 = $('#first input');
+    var input2 = $('#second textarea');
     var socket = io.connect('', {
         reconnect: false
     });
 
     socket
-        .on('message', function(username, message, time) {
-            printMessage(username + ": " + message);
+        .on('message', function(username, theme, message, time) {
+            printMessage(username)
+            printMessage("Theme: " + theme);
+            printMessage("Message: " + message);
             printDate(time);
         })
         .on('updateTime', function(time, index) {
@@ -33,11 +40,13 @@
         })
         .on('connect', function() {
             form.on('submit', sendMessage);
-            input.prop('disabled', false);
+            input1.prop('disabled', false);
+            input2.prop('disabled', false);
         })
         .on('disconnect', function() {
             form.off('submit', sendMessage);
-            input.prop('disabled', true);
+            input1.prop('disabled', true);
+            input2.prop('disabled', true);
             this.$emit('error');
         })
         .on('logout', function() {
@@ -53,12 +62,14 @@
         });
 
     function sendMessage() {
-        var text = input.val();
-        socket.emit('message', text, function() {
-            printMessage(text);
+        var text1 = input1.val();
+        var text2 = input2.val();
+        socket.emit('message', text1, text2, function() {
+            printMessage("Theme: " + text1 + "Message: " +text2 );
         });
 
-        input.val('');
+        input1.val('');
+        input2.val('');
         return false;
     }
 
