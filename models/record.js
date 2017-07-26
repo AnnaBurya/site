@@ -6,7 +6,6 @@ var mongoose = require('lib/mongoose'),
 
 var schema = new Schema({
     username: {
-        _id: 5,
         unique: false,
         type: String,
         required: true
